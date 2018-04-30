@@ -25,7 +25,7 @@ require=(function e(t,n,r){
         var MAX_COL_INDEX = 6;
         var MAX_ROW_INDEX = 5;
         var myCanvas = document.getElementById('gameBoard');
-        var ctx = myCanvas.getContext('2d');
+        var canvas = myCanvas.getContext('2d');
 
         function createGameBoard () {
             var gameState = [];
@@ -47,10 +47,10 @@ require=(function e(t,n,r){
                     var slotStatus = gameState[rowIndex][colIndex];
                     var topLeftX = colIndex * colWidth;
                     var topLeftY = rowIndex * rowHeight;
-                    ctx.fillStyle = colour[slotStatus];
-                    ctx.fillRect(topLeftX, topLeftY, colWidth, rowHeight);
-                    ctx.strokeRect(topLeftX, topLeftY, colWidth, rowHeight);
-                    ctx.strokStyle = colour['black'];
+                    canvas.fillStyle = colour[slotStatus];
+                    canvas.fillRect(topLeftX, topLeftY, colWidth, rowHeight);
+                    canvas.strokeRect(topLeftX, topLeftY, colWidth, rowHeight);
+                    canvas.strokStyle = colour['black'];
                 }//end inner for
             }//end outer for
         }//end funct

@@ -7,6 +7,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongoose = require('mongoose');
 var games = {};
+//players per room
 var MAX_NUM_PLAYERS = 2;
 var jwt = require('jsonwebtoken');
 var superSecret = 'secret';
@@ -80,7 +81,7 @@ function initPlayerSocket(socket) {
             }
         } else {
           //failed to add player, room full
-            socket.emit('failedToAddPlayer');
+            socket.emit('couldNotAdd');
         }//end if else
     }//end funct
 
@@ -91,7 +92,7 @@ function initPlayerSocket(socket) {
         for (var i = 0; i < games[socket.gameName].players.length; i++) {
             games[socket.gameName].players[i].emit(
                 //updates state
-                'gameStateUpdate',
+                'gameUpdate',
                 {currentTurnColor: newTurnColor, gameState: info.gameState}
             );
         }
@@ -102,6 +103,7 @@ function initPlayerSocket(socket) {
         }//end if
     }//end funct
 
+    //socket connections
     socket.on('getListOfOpenGames', getListOfOpenGames);
     socket.on('createNewGame', createNewGame);
     socket.on('addPlayerToGame', addPlayerToGame);
@@ -117,6 +119,7 @@ function isGameOver(state) {
     //check the rows
     for (var row = 0; row <  state.length; row++) {
         var rowString = state[row].join();
+        //colours from the colourmapper
         if (rowString.match(/red,red,red,red/) || rowString.match(/blue,blue,blue,blue/)) {
             return true;
         }//end if
@@ -128,6 +131,7 @@ function isGameOver(state) {
             currentColumnArray.push(state[row][col]);
         }//end inner for
         var currentColumnString = currentColumnArray.join();
+        //colours from the colourmapper
         if (currentColumnString.match(/red,red,red,red/) || currentColumnString.match(/blue,blue,blue,blue/)) {
             return true;
         }//end if
@@ -136,16 +140,16 @@ function isGameOver(state) {
     for (var row = 0; row < state.length; row++) {
         for (var col = 0; col < state[row].length; col++) {
             if (state[row-3] && state[row-3][col+3]) {
-                var diagRight = [state[row][col], state[row-1][col+1], state[row-2][col+2], state[row-3][col+3]];
-                var diagRightString = diagRight.join();
-                if (diagRightString.match(/red,red,red,red/) || diagRightString.match(/blue,blue,blue,blue/)) {
+                var diagR = [state[row][col], state[row-1][col+1], state[row-2][col+2], state[row-3][col+3]];
+                var diagRS = diagR.join();
+                if (diagRS.match(/red,red,red,red/) || diagRS.match(/blue,blue,blue,blue/)) {
                     return true;
                 }//end if
             }//end if
             if (state[row-3] && state[row-3][col-3]) {
-                var diagLeft = [state[row][col], state[row-1][col-1], state[row-2][col-2], state[row-3][col-3]];
-                var diagLeftString = diagLeft.join();
-                if (diagLeftString.match(/red,red,red,red/) || diagLeftString.match(/blue,blue,blue,blue/)) {
+                var diagL = [state[row][col], state[row-1][col-1], state[row-2][col-2], state[row-3][col-3]];
+                var diagLS = diagL.join();
+                if (diagLS.match(/red,red,red,red/) || diagLS.match(/blue,blue,blue,blue/)) {
                     return true;
                 }//end inner if
             }//end if
