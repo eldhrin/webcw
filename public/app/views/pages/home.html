@@ -1,0 +1,13 @@
+<div class="jumbotron text-center">
+  <h1>Game App</h1>
+
+  <div ng-if="!main.loggedIn">
+    <p>Login to save progress</p>
+    <a href="/login" class="btn btn-primary">Login</a>
+  </div>
+
+  <div ng-if="main.loggedIn">
+    <p>Play game</p>
+    <a href="/game" class="btn btn-primary">Play</a>
+  </div>
+</div>
